@@ -2,12 +2,12 @@
 
 Time spent: **15** hours spent in total
 
-> Objective: Setup a honeypot and intercept some attempted attacks in the wild.  
+> Objective: Set up a honeypot and intercept some attempted attacks in the wild.  
 
 
 ## Modern Honeypot Network (MHN)
 
-MHN is a centralized server for management and data collection of honeypots. MHN allows you to deploy sensors quickly and to collect data immediately, viewable from a neat web interface. Honeypot deploy scripts include several common honeypot technologies, including Snort, Cowrie, Dionaea, and glastopf, among others [[1](https://github.com/threatstream/mhn)].
+MHN is a centralized server for management and data collection of honeypots. MHN allows you to deploy sensors quickly and to collect data immediately, viewable from a neat web interface. [[1](https://github.com/threatstream/mhn)].
 
 ![MHN admin page](./assets/modern-honeypot-network.gif)
 
@@ -17,21 +17,21 @@ MHN is a centralized server for management and data collection of honeypots. MHN
 
 These are the honeypots I deployed:  
 
-1. **Conpot**: Conpot is a low interactive server side Industrial Control Systems honeypot designed to be easy to deploy, modify and extend [[2](https://github.com/threatstream/mhn/wiki/Conpot-Sensor)]. I deployed a single instance of this honeypot to a virtual machine hosted in the Google Cloud Platform.  
+1. **Conpot**: Conpot is a low interactive server side Industrial Control Systems (ICS) honeypot designed to be easy to deploy, modify and extend [[2](https://github.com/threatstream/mhn/wiki/Conpot-Sensor)]. I deployed a single instance of this honeypot to a virtual machine hosted in the Google Cloud Platform.  
 2. **Cowrie**: Cowrie is a medium interaction SSH and Telnet honeypot designed to log brute force attacks and the shell interaction performed by the attacker [[3](https://github.com/threatstream/mhn/wiki/Cowrie-Sensor)]. I deployed a single instance of this honeypot to a virtual machine hosted in the Google Cloud Platform.  
-3. **Dionaea**: Dionaea is a honeypot which traps malware exploiting vulnerabilities exposed by services offered to a network with the ultimate goal of gaining a copy of the malware [[4](https://github.com/threatstream/mhn/wiki/Dionaea-Sensor)]. I deployed three instances of this honeypot to three different virtual machines hosted in the Google Cloud Platform. See the *challenges* section below for an explanation of why I deployed three instances of this honeypot.  
+3. **Dionaea**: Dionaea is a honeypot which traps malware exploiting vulnerabilities exposed by services offered to a network with the ultimate goal of gaining a copy of the malware [[4](https://github.com/threatstream/mhn/wiki/Dionaea-Sensor)]. I deployed three instances of this honeypot to three different virtual machines hosted in the Google Cloud Platform. See the *challenges* section below for an explanation of why I did this.  
 
 
 
 ## Challenges  
 
-As mentioned before, the goal of the Dionaea honeypot is to obtain copies of malwares attacking the server. But, after a couple of days of setting up a first instance (Ubuntu - Dionaea with HTTP), the honeypot did not catch anything. So, I decided to deploy a second instance (Ubuntu 14.04/CentOS 7 - Dionaea). After some time, I noticed this honeypot was not capturing any malware either. Intrigued by this, I looked online and found an [issue](https://github.com/threatstream/mhn/issues/417) raised in the MHN Github page. According to many users, the honeypot Dionaea, when deployed through MHN, shows no payloads. In the same page, I found the solution. One user suggested that manually installing and linking Dionaea to MHN worked. So, once again, I looked online and found this [tutorial](https://www.attacusatlas.com/how-to-set-up-dionaea-honeypot-with-modern-honey-network-and-slack-alerts/). I simply followed the directions given there, and the results were surprising; this Dionaea install captured about thirty copies of malwares! 
+As mentioned before, the goal of the Dionaea honeypot is to obtain copies of malware attacking the server. But, a couple of days after I set up the first instance (Ubuntu - Dionaea with HTTP), the honeypot did not catch anything. So, I decided to deploy a second instance (Ubuntu 14.04/CentOS 7 - Dionaea). After some time, I noticed that this honeypot was not capturing any malware either. Intrigued by this, I searched online and found an [issue](https://github.com/threatstream/mhn/issues/417) raised in the MHN Github page. According to many users, Dionaea, when deployed through the scripts provided by MHN, shows no payloads. In the same page, however, I found the solution. One user suggested that manually installing and linking Dionaea to MHN fixes the problem. So, once again, I searched online and found this [guide](https://www.attacusatlas.com/how-to-set-up-dionaea-honeypot-with-modern-honey-network-and-slack-alerts/). I simply followed the directions given there, and the results were surprising; the new Dionaea honeypot captured about thirty different copies of malware in twelve hours! (see *Data Collected* section below) 
 
 
 
 ### Data Collected 
 
-The following tables showcase stats collected by MHN.
+The following tables showcase statistics provided by MHN in the admin page.
 
 *Table 1 - Sensors*
 
@@ -39,11 +39,10 @@ The following tables showcase stats collected by MHN.
 |:--------:|:----:|:-------:|
 | conpot | 7fb1f8bc-4698-11e8-91c8-94c6911037e2 | 282 |
 | cowrie | 74f228fc-4693-11e8-91c8-94c6911037e2 | 212 |
-| dionaea | 6a00e394-4692-11e8-91c8-94c6911037e2 | 10878 |
-| dionaea | 5aaf385c-491a-11e8-91c8-94c6911037e2 | 1671 |
-| dionaea | 09a28b60-4921-11e8-91c8-94c6911037e2 | 1127 |
+| (1) dionaea | 6a00e394-4692-11e8-91c8-94c6911037e2 | 10878 |
+| (2) dionaea | 5aaf385c-491a-11e8-91c8-94c6911037e2 | 1671 |
+| (3) dionaea | 09a28b60-4921-11e8-91c8-94c6911037e2 | 1127 |
 
-<br>
 
 *Table 2 - Top 5 attacker IPs*
 
@@ -55,7 +54,6 @@ The following tables showcase stats collected by MHN.
 | 4 | 5.188.11.91 | Russia | 104 |
 | 5 | 181.214.87.34 | U.S | 103 |
 
-<br>
 
 *Table 3 - Top 5 attacked ports*
 
@@ -67,23 +65,23 @@ The following tables showcase stats collected by MHN.
 | 4 | 23 | 490 |
 | 5 | 22 | 129 |
 
-<br>
-
-The graphs below illustrate the data collected by the Cowrie honeypot. They include the top attackers (IP addresses), top users, and top passwords.   
+The bar charts below offer a visualization of the data collected by the Cowrie honeypot. They show the top attackers (IP addresses), top users, and top passwords.   
 
 ![top attackers](./assets/top-attackers.png)
+
 ![top users](./assets/top-users.png)
+
 ![top passwords](./assets/top-passwords.png)
 
-The next screenshot shows the Payloads Report page from MHN admin page.  
+The next screenshot shows the Payloads Report page from MHN admin page. It displays useful information about captured malware.    
 
 ![payload report](./assets/payload-report.png)
 
-The following screen cap shows the binaries (malwares) captured by the Dionaea honeypot.
+And the following screen capture shows the malware (binaries) captured by the Dionaea honeypot, which can be found under ```/opt/dionaea/var/dionaea/binaries```. There are about thirty in such directory.
 
 ![binaries](./assets/binaries.gif)
 
-File [session.json](./session.json) contains all the data collected by all honeypots.
+Lastly, file [session.json](./session.json) contains all the data collected by all honeypots.
 
 
 
@@ -91,3 +89,4 @@ File [session.json](./session.json) contains all the data collected by all honey
 
 * [MHN, list of supported sensors](https://github.com/threatstream/mhn/wiki/List-of-Supported-Sensors)
 * [Google Cloud Platform documentation](https://cloud.google.com/docs/)
+
