@@ -29,7 +29,7 @@ As mentioned before, the goal of the Dionaea honeypot is to obtain copies of mal
 
 
 
-### Data Collected 
+## Data Collected 
 
 The following tables showcase statistics provided by MHN in the admin page.
 
